@@ -48,21 +48,10 @@ function filterResults(newList) {
     return (filteredList);
 }
 
-function GenerateItem(item, i) {
-    const [open, setOpen] = React.useState(false);
-    const handleClick = () => {
-        setOpen(!open);
-    };
-
-    const handleMouseOut = () => {
-        if (open) {
-            setOpen(false);
-        }
-    }
-    
+function GenerateItem(item, i, handleClick, open) {
     return (
         <div >
-            <ListItemButton key={i} onClick={handleClick} onMouseOut={handleMouseOut} style={{background: i % 2 === 0 ? '#ededed' : 'white'}}>
+            <ListItemButton key={i} onClick={handleClick} style={{background: i % 2 === 0 ? '#ededed' : 'white'}}>
                 <ListItemText primary={
                     <div style={{display: 'flex', flexDirection: 'row',padding: 15,}}>
                         <Typography style={{paddingRight: '200px',fontSize: '20px', fontFamily: 'Rajdhani'}}>{item['fullName']}</Typography>
@@ -89,9 +78,14 @@ function GenerateItem(item, i) {
 export default function ResultsComponent({resultData}) {
     let newList = getResults(resultData['data']);
     let filteredResults = filterResults(newList)
-
+    const [open, setOpen] = React.useState(false);
     let randomKey = Math.random() * 10;
     let i = 0;
+
+    const handleClick = () => {
+        setOpen(!open);
+    };
+
     return (
         <div>
             <List
@@ -113,7 +107,7 @@ export default function ResultsComponent({resultData}) {
             >
                 <div style={{overflowY: 'scroll', height: '404px'}}>
                     {filteredResults.map((item) => (
-                        GenerateItem(item, i++)
+                        GenerateItem(item, i++, handleClick, open)
                     ))}
                 </div>
             </List>
