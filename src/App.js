@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
   AppBarText: {
       textAlign: 'center',
       fontSize: '35px',
-      padding: '5px',
+      padding: '1px',
       fontFamily: 'Rajdhani',
   }
 }))

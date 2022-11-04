@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import CssBaseline from '@mui/material/CssBaseline';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -7,6 +7,8 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import VirtualizedList from "./VirtualizedList";
 import { Typography } from "@mui/material";
+import ResultsComponent from "./resultsComponent";
+import { RaceDetails } from "../service/Service";
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -16,10 +18,9 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-function generateYearList() {
+function generateYearList(currentYear) {
     let Years = [];
-    const currentYear = new Date().getFullYear();
-
+    
     for (let i = currentYear; i >= 2005; i--) {
         Years.push(i);
     }
@@ -28,32 +29,33 @@ function generateYearList() {
 }
 
 export default function Appcontainer() {
-    let yearList = generateYearList();
-    let count = yearList.length
+    const currentYear = new Date().getFullYear();
+    const [resultData, setResultData] = useState();
+    const getResultsData = (data, year) => {setResultData({'data': data, 'year': year});}
+
+    let yearList = generateYearList(currentYear);
+    let count = yearList.length;
 
     return (
         <React.Fragment>
             <CssBaseline />
             <Container maxWidth="lg" style={{paddingTop: '5%'}}>
-                <Box sx={{ bgcolor: 'white', width: '100%', height: '100vh', padding: '15px'}} >
+                <Box sx={{ bgcolor: 'white', width: '100%', height: '90vh', padding: '15px'}} >
                 <Grid container spacing={1}>
-                    <Grid item xs={6}>
-                    <Typography style={{fontSize: '20px', color: 'black', textAlign: 'center', fontFamily: 'Rajdhani'}}>Select Year</Typography>
-                        <Item style={{height: '25vh'}}>
-                            <VirtualizedList yearList={yearList} count={count}/>
-                        </Item>
-                    </Grid>
-                    <Grid item xs={6}>
-                    <Typography style={{fontSize: '20px', color: 'black', textAlign: 'center', fontFamily: 'Rajdhani'}}>Select Race</Typography>
-                        <Item style={{height: '25vh'}}>
-                            <VirtualizedList />
-                        </Item>
-                    </Grid>
                     <Grid item xs={12}>
-                        <Item style={{height: '67vh'}}>
-                        <Typography style={{fontSize: '50px', color: 'black', textAlign: 'center', fontFamily: 'Rajdhani'}}>2022 RACE RESULTS</Typography>
+                    <Typography style={{fontSize: resultData ? '20px' : '50px', color: 'black', textAlign: 'center', fontFamily: 'Rajdhani'}}>Select Year</Typography>
+                        <Item style={{height: resultData ? '25vh' : '85vh'}}>
+                            <VirtualizedList yearList={yearList} count={count} getResultsData={getResultsData} resultData={resultData}/>
                         </Item>
                     </Grid>
+                    {resultData ?
+                        <Grid item xs={12}>
+                            <Item style={{height: '61vh'}}>
+                                <Typography style={{fontSize: '50px', color: 'black', textAlign: 'center', fontFamily: 'Rajdhani'}}>{`${resultData['year']} RACE RESULTS`}</Typography>
+                                <ResultsComponent resultData={resultData}/>
+                            </Item>
+                        </Grid>
+                    : <div></div>}
                 </Grid>
                 </Box>
             </Container>
